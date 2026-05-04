@@ -32,7 +32,7 @@ export class DashboardPage {
     this.logoutButton = page.locator('[data-testid="logout-button"]');
 
     // Content
-    this.welcomeHeading = page.locator('[data-testid="welcome-heading"]');
+    this.welcomeHeading = page.locator('img[src*="logo"]');
     this.statsCards = page.locator('[data-testid="stats-card"]');
     this.notificationsIcon = page.locator('[data-testid="notifications-icon"]');
     this.notificationsBadge = page.locator('[data-testid="notifications-badge"]');
@@ -41,14 +41,6 @@ export class DashboardPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/dashboard');
-  }
-
-  async clickUserAvatar(): Promise<void> {
-    await this.userAvatarButton.click();
-  }
-
-  async clickLogout(): Promise<void> {
-    await this.logoutButton.click();
   }
 
   async getWelcomeText(): Promise<string> {
