@@ -16,12 +16,12 @@ test.describe('Login @regression', () => {
     await expect(loginPage.loginButton).toBeVisible();
   });
 
-  test('should show error with invalid credentials', async ({ loginPage, envConfig }) => {
+  test('should show error with invalid credentials', async ({ loginPage }) => {
     await loginPage.goto();
 
     await loginPage.fillUsername('invalid@example.com');
     await loginPage.fillPassword('wrongpassword');
-    
+
     await loginPage.clickLogin();
 
     await expect(loginPage.errorMessage).toBeVisible();
