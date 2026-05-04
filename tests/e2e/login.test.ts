@@ -21,6 +21,7 @@ test.describe('Login @regression', () => {
 
     await loginPage.fillUsername('invalid@example.com');
     await loginPage.fillPassword('wrongpassword');
+    
     await loginPage.clickLogin();
 
     await expect(loginPage.errorMessage).toBeVisible();

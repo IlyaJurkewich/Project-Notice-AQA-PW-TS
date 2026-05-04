@@ -1,6 +1,10 @@
 name: CI
 
 on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
   schedule:
     - cron: '*/15 * * * *'   # Каждые 15 минут
 
