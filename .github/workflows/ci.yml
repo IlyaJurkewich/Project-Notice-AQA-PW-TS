@@ -54,6 +54,15 @@ jobs:
         run: npm run test:e2e
         continue-on-error: false
 
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Playwright Test Results (${{ matrix.env }})
+          path: test-results/results.xml
+          reporter: 'java-junit'
+          fail-on-error: false
+
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
         if: always()
