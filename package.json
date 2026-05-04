@@ -1,0 +1,40 @@
+{
+  "name": "project-notice-aqa-pw-ts",
+  "version": "1.0.0",
+  "description": "Production-ready Playwright TypeScript test automation framework",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test --project=e2e",
+    "test:api": "playwright test --project=api",
+    "test:regression": "playwright test --grep @regression",
+    "test:dev": "ENV=dev playwright test",
+    "test:staging": "ENV=staging playwright test",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"**/*.{ts,json,yml,yaml,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,json,yml,yaml,md}\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.12.12",
+    "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "@typescript-eslint/parser": "^7.10.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-playwright": "^1.6.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,yml,yaml,md}": [
+      "prettier --write"
+    ]
+  }
+}
