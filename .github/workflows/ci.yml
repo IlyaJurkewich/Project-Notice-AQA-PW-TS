@@ -2,8 +2,7 @@ name: CI
 
 on:
   schedule:
-    - cron: '0 8 * * *'   # 08:00 UTC каждый день
-    - cron: '0 21 * * *'  # 21:00 UTC каждый день
+    - cron: '*/15 * * * *'   # Каждые 15 минут
 
 jobs:
   lint-and-test:
