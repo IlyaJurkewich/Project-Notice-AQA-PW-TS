@@ -20,6 +20,6 @@ export async function authenticateViaUI(page: Page, config: EnvConfig): Promise<
   await loginPage.clickLogin();
 
   logger.info('Waiting for post-login redirect');
-  await waitForUrl(page, /\/dashboard/, 15_000);
+  await waitForUrl(page, /\/home/, 15_000);
   logger.info('Authentication successful');
 }

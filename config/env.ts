@@ -9,7 +9,7 @@ export interface EnvConfig {
 }
 
 export function getEnvConfig(): EnvConfig {
-  const env = (process.env.ENV ?? 'dev') as 'dev' | 'staging';
+  const env = (process.env.ENV ?? 'staging') as 'staging' | 'dev';
 
   if (env === 'staging') {
     // eslint-disable-next-line @typescript-eslint/no-var-requires

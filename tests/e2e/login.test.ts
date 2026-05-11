@@ -8,7 +8,7 @@ import { test, expect } from '../../fixtures/test.fixture';
  * Uses staging environment with credentials from config/staging.env.ts
  */
 test.describe('Login @regression', () => {
-  test('should display login form elements', async ({ loginPage }) => {
+  test('should verify login form structure and visibility', async ({ loginPage }) => {
     await loginPage.goto();
 
     await expect(loginPage.usernameInput).toBeVisible();
@@ -27,5 +27,38 @@ test.describe('Login @regression', () => {
     await expect(loginPage.errorMessage).toBeVisible();
     const errorText = await loginPage.getErrorText();
     expect(errorText.length).toBeGreaterThan(0);
+  });
+
+  test('should login successfully with valid credentials and navigate to home page', async ({ loginPage, dashboardPage, envConfig }) => {
+    await loginPage.goto();
+
+    // Use valid credentials from the environment configuration
+    await loginPage.fillUsername(envConfig.credentials.username);
+    await loginPage.fillPassword(envConfig.credentials.password);
+
+    await loginPage.clickLogin();
+
+    // Wait for navigation to dashboard
+    await dashboardPage.page.waitForURL('**/home**', { timeout: 10000 });
+
+    // Verify we're on the home page (dashboard) by checking key elements
+    await expect(dashboardPage.sidebarNav).toBeVisible();
+  });
+
+  test('should navigate to Home page when clicking Home button', async ({ authenticatedPage, dashboardPage }) => {
+
+    await dashboardPage.homeButton.click();
+
+    // Wait for navigation and verify URL contains "home"
+    await dashboardPage.page.waitForURL('**/home**', { timeout: 10000 });
+  });
+
+  test('should navigate to Job History page when clicking Job History button', async ({ authenticatedPage, dashboardPage }) => {
+
+    await dashboardPage.jobHistoryButton.click();
+
+    // Wait for navigation and verify URL contains "history"
+    await dashboardPage.page.waitForURL('**/history**', { timeout: 10000 });
+    expect(dashboardPage.page.url()).toContain('history');
   });
 });

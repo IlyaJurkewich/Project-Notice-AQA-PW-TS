@@ -13,6 +13,8 @@ export class DashboardPage {
   readonly userAvatarButton: Locator;
   readonly userDropdownMenu: Locator;
   readonly logoutButton: Locator;
+  readonly homeButton: Locator;
+  readonly jobHistoryButton: Locator;
 
   // Content selectors
   readonly welcomeHeading: Locator;
@@ -25,11 +27,13 @@ export class DashboardPage {
     this.page = page;
 
     // Navigation
-    this.sidebarNav = page.locator('[data-testid="sidebar-nav"]');
+    this.sidebarNav = page.locator('[class*="MuiDrawer-root"]');
     this.navMenuItems = page.locator('[data-testid="nav-menu-item"]');
     this.userAvatarButton = page.locator('[data-testid="user-avatar-button"]');
     this.userDropdownMenu = page.locator('[data-testid="user-dropdown-menu"]');
     this.logoutButton = page.locator('[data-testid="logout-button"]');
+    this.homeButton = page.locator('[aria-label="Home"]');
+    this.jobHistoryButton = page.locator('[aria-label="Job History"]');
 
     // Content
     this.welcomeHeading = page.locator('img[src*="logo"]');
