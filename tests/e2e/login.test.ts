@@ -1,4 +1,5 @@
 import { test, expect } from '../../fixtures/test.fixture';
+import { timeouts } from '../../config/timeouts';
 
 /**
  * E2E Login tests — @regression
@@ -40,7 +41,7 @@ test.describe('Login @regression', () => {
 
     // Wait for welcome message to appear, indicating successful login and navigation to dashboard
     console.log('Current URL before wait:', dashboardPage.page.url());
-    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: 15000 });
+    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: timeouts.auth.login });
     console.log('Current URL after wait:', dashboardPage.page.url());
 
     // Verify we're on the home page (dashboard) by checking key elements
@@ -53,7 +54,7 @@ test.describe('Login @regression', () => {
 
     // Wait for welcome message and verify navigation
     console.log('Current URL before home click:', dashboardPage.page.url());
-    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: 15000 });
+    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: timeouts.page.navigation });
     console.log('Current URL after home click:', dashboardPage.page.url());
   });
 
@@ -62,7 +63,7 @@ test.describe('Login @regression', () => {
     await dashboardPage.jobHistoryButton.click();
     // Wait for navigation and verify URL contains "history"
     console.log('Current URL before job history click:', dashboardPage.page.url());
-    await dashboardPage.page.waitForURL(/history/, { timeout: 15000 });
+    await dashboardPage.page.waitForURL(/history/, { timeout: timeouts.page.navigation });
     console.log('Current URL after job history click:', dashboardPage.page.url());
     expect(dashboardPage.page.url()).toContain('history');
   });
