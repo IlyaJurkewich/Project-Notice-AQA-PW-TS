@@ -56,7 +56,6 @@ test.describe('Login @regression', () => {
   test('should navigate to Job History page when clicking Job History button', async ({ authenticatedPage, dashboardPage }) => {
 
     await dashboardPage.jobHistoryButton.click();
-
     // Wait for navigation and verify URL contains "history"
     await dashboardPage.page.waitForURL('**/history**', { timeout: 10000 });
     expect(dashboardPage.page.url()).toContain('history');
