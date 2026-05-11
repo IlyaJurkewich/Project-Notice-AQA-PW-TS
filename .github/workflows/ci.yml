@@ -95,11 +95,13 @@ jobs:
             echo "| Status | Test Name |" >> $GITHUB_STEP_SUMMARY
             echo "|--------|-----------|" >> $GITHUB_STEP_SUMMARY
             
-            # Парсим тестовые кейсы
+            # Парсим тестовые кейсы с учетом новой конфигурации JUnit
             grep -oP '<testcase[^>]*name="\K[^"]+' test-results/results.xml | while read -r testname; do
               # Проверяем, есть ли failure для этого теста
-              if grep -q "name=\"$testname\"[^>]*>.*<failure" test-results/results.xml 2>/dev/null; then
+              if grep -q '<testcase[^>]*name="'"$testname"'"[^>]*>.*<failure' test-results/results.xml 2>/dev/null; then
                 echo "| ❌ | $testname |" >> $GITHUB_STEP_SUMMARY
+              elif grep -q '<testcase[^>]*name="'"$testname"'"[^>]*>.*<skipped' test-results/results.xml 2>/dev/null; then
+                echo "| ⏭️ | $testname |" >> $GITHUB_STEP_SUMMARY
               else
                 echo "| ✅ | $testname |" >> $GITHUB_STEP_SUMMARY
               fi
