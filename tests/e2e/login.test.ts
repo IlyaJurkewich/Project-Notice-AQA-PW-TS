@@ -29,7 +29,7 @@ test.describe('Login @regression', () => {
     expect(errorText.length).toBeGreaterThan(0);
   });
 
-  test('should login successfully with valid credentials and navigate to home page', async ({ loginPage, dashboardPage, envConfig }) => {
+  test('should login successfully with valid credentials and navigate to home page', async ({ loginPage, dashboardPage, commonPage, envConfig }) => {
     await loginPage.goto();
 
     // Use valid credentials from the environment configuration
@@ -38,22 +38,22 @@ test.describe('Login @regression', () => {
 
     await loginPage.clickLogin();
 
-    // Wait for navigation with better debugging
+    // Wait for welcome message to appear
     console.log('Current URL before wait:', dashboardPage.page.url());
-    await dashboardPage.page.waitForURL(/thenoticingcenter/, { timeout: 15000 });
+    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: 15000 });
     console.log('Current URL after wait:', dashboardPage.page.url());
 
     // Verify we're on the home page (dashboard) by checking key elements
     await expect(dashboardPage.sidebarNav).toBeVisible();
   });
 
-  test('should navigate to Home page when clicking Home button', async ({ authenticatedPage, dashboardPage }) => {
+  test('should navigate to Home page when clicking Home button', async ({ authenticatedPage, dashboardPage, commonPage }) => {
 
     await dashboardPage.homeButton.click();
 
-    // Wait for navigation and verify URL contains thenoticingcenter
+    // Wait for welcome message and verify navigation
     console.log('Current URL before home click:', dashboardPage.page.url());
-    await dashboardPage.page.waitForURL(/thenoticingcenter/, { timeout: 15000 });
+    await expect(commonPage.welcomeMessage).toBeVisible({ timeout: 15000 });
     console.log('Current URL after home click:', dashboardPage.page.url());
   });
 
