@@ -38,7 +38,7 @@ test.describe('Login @regression', () => {
 
     await loginPage.clickLogin();
 
-    // Wait for welcome message to appear
+    // Wait for welcome message to appear, indicating successful login and navigation to dashboard
     console.log('Current URL before wait:', dashboardPage.page.url());
     await expect(commonPage.welcomeMessage).toBeVisible({ timeout: 15000 });
     console.log('Current URL after wait:', dashboardPage.page.url());
