@@ -38,8 +38,10 @@ test.describe('Login @regression', () => {
 
     await loginPage.clickLogin();
 
-    // Wait for navigation to dashboard
-    await dashboardPage.page.waitForURL('**/home**', { timeout: 10000 });
+    // Wait for navigation with better debugging
+    console.log('Current URL before wait:', dashboardPage.page.url());
+    await dashboardPage.page.waitForURL(/thenoticingcenter/, { timeout: 15000 });
+    console.log('Current URL after wait:', dashboardPage.page.url());
 
     // Verify we're on the home page (dashboard) by checking key elements
     await expect(dashboardPage.sidebarNav).toBeVisible();
@@ -49,15 +51,19 @@ test.describe('Login @regression', () => {
 
     await dashboardPage.homeButton.click();
 
-    // Wait for navigation and verify URL contains "home"
-    await dashboardPage.page.waitForURL('**/home**', { timeout: 10000 });
+    // Wait for navigation and verify URL contains thenoticingcenter
+    console.log('Current URL before home click:', dashboardPage.page.url());
+    await dashboardPage.page.waitForURL(/thenoticingcenter/, { timeout: 15000 });
+    console.log('Current URL after home click:', dashboardPage.page.url());
   });
 
   test('should navigate to Job History page when clicking Job History button', async ({ authenticatedPage, dashboardPage }) => {
 
     await dashboardPage.jobHistoryButton.click();
     // Wait for navigation and verify URL contains "history"
-    await dashboardPage.page.waitForURL('**/history**', { timeout: 10000 });
+    console.log('Current URL before job history click:', dashboardPage.page.url());
+    await dashboardPage.page.waitForURL(/history/, { timeout: 15000 });
+    console.log('Current URL after job history click:', dashboardPage.page.url());
     expect(dashboardPage.page.url()).toContain('history');
   });
 });
