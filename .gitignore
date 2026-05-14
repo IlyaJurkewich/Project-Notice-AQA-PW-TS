@@ -13,6 +13,9 @@ test-results/
 .env
 .env.local
 .env.*.local
+config/dev.env.ts
+config/env.ts
+config/staging.env.ts
 
 # Husky
 .husky/_/
