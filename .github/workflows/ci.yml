@@ -58,8 +58,68 @@ jobs:
       #   run: npm run format:check
 
       - name: Run E2E tests (Chromium)
+        id: test-run
         run: npm run test:e2e
-        continue-on-error: false
+        continue-on-error: true
+
+      - name: Parse test results and generate summary
+        if: always()
+        run: |
+          echo "## 🎭 Playwright Test Results (${{ matrix.env }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "test-results/results.xml" ]; then
+            # Парсим XML для получения статистики
+            TESTS=$(grep -oP 'tests="\K[0-9]+' test-results/results.xml | head -1 || echo "0")
+            FAILURES=$(grep -oP 'failures="\K[0-9]+' test-results/results.xml | head -1 || echo "0")
+            ERRORS=$(grep -oP 'errors="\K[0-9]+' test-results/results.xml | head -1 || echo "0")
+            SKIPPED=$(grep -oP 'skipped="\K[0-9]+' test-results/results.xml | head -1 || echo "0")
+            TIME=$(grep -oP 'time="\K[0-9.]+' test-results/results.xml | head -1 || echo "0")
+            
+            PASSED=$((TESTS - FAILURES - ERRORS - SKIPPED))
+            
+            echo "### 📊 Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✅ Passed | $PASSED |" >> $GITHUB_STEP_SUMMARY
+            echo "| ❌ Failed | $FAILURES |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⚠️ Errors | $ERRORS |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⏭️ Skipped | $SKIPPED |" >> $GITHUB_STEP_SUMMARY
+            echo "| 📝 Total | $TESTS |" >> $GITHUB_STEP_SUMMARY
+            echo "| ⏱️ Duration | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            echo "### 📋 Test Details" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Status | Test Name |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-----------|" >> $GITHUB_STEP_SUMMARY
+            
+            # Парсим тестовые кейсы с учетом новой конфигурации JUnit
+            grep -oP '<testcase[^>]*name="\K[^"]+' test-results/results.xml | while read -r testname; do
+              # Проверяем, есть ли failure для этого теста
+              if grep -q '<testcase[^>]*name="'"$testname"'"[^>]*>.*<failure' test-results/results.xml 2>/dev/null; then
+                echo "| ❌ | $testname |" >> $GITHUB_STEP_SUMMARY
+              elif grep -q '<testcase[^>]*name="'"$testname"'"[^>]*>.*<skipped' test-results/results.xml 2>/dev/null; then
+                echo "| ⏭️ | $testname |" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "| ✅ | $testname |" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Если есть ошибки, показываем детали
+            if [ "$FAILURES" -gt 0 ] || [ "$ERRORS" -gt 0 ]; then
+              echo "### ❌ Failed Tests Details" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              grep -oP '<failure[^>]*message="\K[^"]+' test-results/results.xml | head -10 >> $GITHUB_STEP_SUMMARY || echo "No failure messages found"
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ No test results found at test-results/results.xml" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Publish test results
         if: always()
@@ -93,3 +153,7 @@ jobs:
           name: test-results-${{ matrix.env }}
           path: test-results/
           retention-days: 7
+
+      - name: Fail if tests failed
+        if: steps.test-run.outcome == 'failure'
+        run: exit 1

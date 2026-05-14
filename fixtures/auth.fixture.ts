@@ -3,6 +3,11 @@ import { LoginPage } from '../pages/login.page';
 import { EnvConfig } from '../config/env';
 import { logger } from '../helpers/logger';
 import { waitForUrl } from '../helpers/waiters';
+import { timeouts } from '../config/timeouts';
+
+// Constants
+const APP_DOMAIN = 'thenoticingcenter';
+const POST_LOGIN_URL_PATTERN = new RegExp(APP_DOMAIN, 'i');
 
 /**
  * Performs UI login flow using LoginPage page object.
@@ -20,6 +25,6 @@ export async function authenticateViaUI(page: Page, config: EnvConfig): Promise<
   await loginPage.clickLogin();
 
   logger.info('Waiting for post-login redirect');
-  await waitForUrl(page, /\/home/, 15_000);
+  await waitForUrl(page, POST_LOGIN_URL_PATTERN, timeouts.auth.login);
   logger.info('Authentication successful');
 }

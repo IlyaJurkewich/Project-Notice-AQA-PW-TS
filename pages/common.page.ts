@@ -15,6 +15,7 @@ export class CommonPage {
   readonly modalConfirmButton: Locator;
   readonly modalCancelButton: Locator;
   readonly pageTitle: Locator;
+  readonly welcomeMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,6 +26,7 @@ export class CommonPage {
     this.modalConfirmButton = page.locator('[data-testid="modal-confirm"]');
     this.modalCancelButton = page.locator('[data-testid="modal-cancel"]');
     this.pageTitle = page.locator('h1');
+    this.welcomeMessage = page.locator(':has-text("Welcome")').first();
   }
 
   async navigateTo(path: string): Promise<void> {
